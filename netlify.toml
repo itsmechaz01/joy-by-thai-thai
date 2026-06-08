@@ -1,3 +1,7 @@
+# Netlify Configuration for Joy by Thai Thai PWA
+[build]
+  publish = "."
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
