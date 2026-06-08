@@ -5,62 +5,79 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Joy by Thai Thai</title>
     <style>
-        body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #000; color: #fff; }
-        header { padding: 20px; text-align: center; background: #111; position: sticky; top: 0; z-index: 100; border-bottom: 2px solid #ff0000; }
-        h1 { margin: 0; color: #ff0000; font-size: 1.5rem; }
-        .category { margin: 20px 0; }
-        .category-title { padding: 10px 20px; background: #222; font-weight: bold; color: #ff0000; text-transform: uppercase; }
-        .item { display: flex; justify-content: space-between; padding: 15px 20px; border-bottom: 1px solid #333; }
-        .item-info { flex: 1; }
-        .price { font-weight: bold; margin-left: 10px; color: #fff; }
-        .order-btn { background: #ff0000; border: none; color: white; padding: 10px 20px; border-radius: 5px; font-weight: bold; cursor: pointer; }
-        footer { height: 100px; }
+        body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #000; color: #fff; padding-bottom: 80px; }
+        .page { display: none; padding: 20px; }
+        .active { display: block; }
+        
+        header { text-align: center; padding: 20px; border-bottom: 2px solid #ff0000; }
+        h1 { color: #ff0000; margin: 0; }
+        
+        /* Menu Styling */
+        .category-title { color: #ff0000; font-weight: bold; margin-top: 30px; border-bottom: 1px solid #333; padding-bottom: 5px; text-transform: uppercase; }
+        .item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #222; }
+        .price { color: #aaa; }
+        
+        /* Bottom Nav */
+        nav { position: fixed; bottom: 0; width: 100%; background: #111; display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid #333; }
+        .nav-btn { background: none; border: none; color: #fff; font-size: 0.9rem; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>Joy by Thai Thai</h1>
-    </header>
+    <header><h1>Joy by Thai Thai</h1></header>
 
-    <!-- Menu Content -->
-    <div class="menu">
-        <!-- Category: Curry in a Hurry -->
-        <div class="category">
-            <div class="category-title">Curry in a Hurry</div>
-            <div class="item"><span>Chicken Green Curry (Hot)</span><span class="price">$13.45</span></div>
-            <div class="item"><span>Green Curry</span><span class="price">$13.45</span></div>
-            <div class="item"><span>Massaman Curry</span><span class="price">$13.45</span></div>
-            <div class="item"><span>Mussaman</span><span class="price">$14.00</span></div>
-            <div class="item"><span>Pad Thai vegan</span><span class="price">$11.95</span></div>
-            <div class="item"><span>Panang Curry</span><span class="price">$13.45</span></div>
-            <div class="item"><span>Red Curry</span><span class="price">$13.45</span></div>
-            <div class="item"><span>Yellow Curry</span><span class="price">$13.45</span></div>
-        </div>
-
-        <!-- Category: Joyful Bites -->
-        <div class="category">
-            <div class="category-title">Joyful Bites</div>
-            <div class="item"><span>Chicken Wings</span><span class="price">$9.00</span></div>
-            <div class="item"><span>Crab Rangoon (6pcs)</span><span class="price">$7.45</span></div>
-            <div class="item"><span>Crispy Spring Rolls</span><span class="price">$7.00</span></div>
-            <div class="item"><span>Pot Stickers</span><span class="price">$8.50</span></div>
-            <div class="item"><span>Satay</span><span class="price">$9.45</span></div>
-        </div>
-
-        <!-- Category: WOK This Way Tacos -->
-        <div class="category">
-            <div class="category-title">WOK This Way Tacos</div>
-            <div class="item"><span>(1) Chicken Taco</span><span class="price">$3.00</span></div>
-            <div class="item"><span>(2) Chicken Tacos</span><span class="price">$6.00</span></div>
-            <div class="item"><span>(4) Chicken Tacos</span><span class="price">$11.00</span></div>
-            <div class="item"><span>(1) Shrimp Taco</span><span class="price">$6.00</span></div>
-            <div class="item"><span>(2) Shrimp Tacos</span><span class="price">$12.00</span></div>
-        </div>
-        
-        <!-- Add more categories here as needed from Joy_Menu_Final_Clean.csv -->
+    <!-- Home Page -->
+    <div id="home" class="page active">
+        <h2>Welcome to Joy</h2>
+        <p>Your local favorite, now easier than ever to order.</p>
     </div>
 
-    <footer></footer>
+    <!-- Menu Page -->
+    <div id="menu" class="page">
+        <!-- Categories Generated from Joy_Menu_Final_Clean.csv -->
+        <div class="category-title">Curry in a Hurry</div>
+        <div class="item"><span>Green Curry</span><span class="price">$13.45</span></div>
+        <div class="item"><span>Panang Curry</span><span class="price">$13.45</span></div>
+
+        <div class="category-title">Joyful Bites</div>
+        <div class="item"><span>Crab Rangoon (6pcs)</span><span class="price">$7.45</span></div>
+        <div class="item"><span>Satay</span><span class="price">$9.45</span></div>
+
+        <div class="category-title">WOK This Way Tacos</div>
+        <div class="item"><span>(1) Chicken Taco</span><span class="price">$3.00</span></div>
+        <div class="item"><span>(2) Shrimp Tacos</span><span class="price">$12.00</span></div>
+        
+        <div class="category-title">Night Market Eats</div>
+        <div class="item"><span>Pad Thai</span><span class="price">$13.00</span></div>
+        <div class="item"><span>Thai Fried Rice</span><span class="price">$12.45</span></div>
+    </div>
+
+    <!-- Liked Page -->
+    <div id="liked" class="page">
+        <h2>Your Favorites</h2>
+        <p>Save items here for quick re-ordering.</p>
+    </div>
+
+    <!-- Cart Page -->
+    <div id="cart" class="page">
+        <h2>Your Cart</h2>
+        <p>Total: $0.00</p>
+        <button style="background: #ff0000; color: #fff; border:none; padding: 15px; width: 100%;">Checkout</button>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav>
+        <button class="nav-btn" onclick="showPage('home')">🏠 Home</button>
+        <button class="nav-btn" onclick="showPage('menu')">🍽️ Menu</button>
+        <button class="nav-btn" onclick="showPage('liked')">❤️ Liked</button>
+        <button class="nav-btn" onclick="showPage('cart')">🛒 Cart</button>
+    </nav>
+
+    <script>
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+        }
+    </script>
 </body>
 </html>
