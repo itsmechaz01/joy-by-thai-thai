@@ -8,47 +8,59 @@ cat <<'EOF' > index.html
     <style>
         :root { --primary: #ff0000; --bg: #000; --text: #fff; }
         body { margin: 0; font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); padding-bottom: 80px; }
-        .page { display: none; padding: 20px; }
+        
+        /* Header & Search */
+        header { padding: 20px; }
+        h1 { font-size: 1.5rem; margin-bottom: 15px; }
+        .search-bar { width: 100%; padding: 12px; border-radius: 10px; border: none; background: #222; color: #fff; box-sizing: border-box; }
+
+        /* Feed Cards */
+        .page { display: none; }
         .active { display: block; }
-        header { text-align: center; padding: 20px; border-bottom: 2px solid var(--primary); }
-        h1 { color: var(--primary); margin: 0; }
-        .category-title { color: var(--primary); font-weight: bold; margin-top: 25px; border-bottom: 1px solid #333; padding: 10px 0; text-transform: uppercase; font-size: 0.9rem; }
-        .item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #222; }
-        .price { color: #aaa; font-weight: bold; }
-        nav { position: fixed; bottom: 0; width: 100%; background: #111; display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid #333; z-index: 1000; }
-        .nav-btn { background: none; border: none; color: #fff; font-size: 0.8rem; cursor: pointer; display: flex; flex-direction: column; align-items: center; }
-        .helcim-btn { background: var(--primary); color: white; border: none; padding: 15px; width: 100%; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 1rem; }
+        .card { position: relative; height: 300px; border-radius: 20px; margin: 20px; overflow: hidden; background: #333; display: flex; align-items: flex-end; padding: 20px; box-sizing: border-box; background-size: cover; background-position: center; }
+        .card-overlay { z-index: 1; }
+        .badge { background: #ffcc00; color: #000; padding: 4px 8px; border-radius: 5px; font-weight: bold; font-size: 0.8rem; position: absolute; top: 15px; left: 15px; }
+        .title { font-size: 1.5rem; font-weight: bold; margin: 5px 0; }
+        .price { color: var(--primary); font-size: 1.5rem; font-weight: bold; }
+
+        /* Nav */
+        nav { position: fixed; bottom: 0; width: 100%; background: #000; display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid #333; z-index: 1000; }
+        .nav-btn { background: none; border: none; color: #aaa; font-size: 0.7rem; cursor: pointer; display: flex; flex-direction: column; align-items: center; }
+        .nav-btn.active { color: var(--primary); }
     </style>
 </head>
 <body>
 
-    <header><h1>Joy by Thai Thai</h1></header>
+    <header>
+        <h1>Joy by Thai Thai</h1>
+        <input type="text" class="search-bar" placeholder="Search Thai dishes...">
+    </header>
 
+    <!-- Home (Visual Feed) -->
     <div id="home" class="page active">
-        <h2>Trending Now</h2>
-        <div style="height: 300px; background: #222; display: flex; align-items: center; justify-content: center; border-radius: 10px;">
-            TikTok Feed Placeholder
+        <div class="card" style="background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.7)), url('https://via.placeholder.com/600x400');">
+            <span class="badge">Popular 🔥</span>
+            <div class="card-overlay">
+                <div class="title">Thai Fried Rice</div>
+                <div style="font-size: 0.9rem; opacity: 0.8;">4.8 ★ • 12 min</div>
+                <div class="price">$12.45</div>
+            </div>
+        </div>
+        <div class="card" style="background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.7)), url('https://via.placeholder.com/600x400');">
+            <span class="badge">Popular 🔥</span>
+            <div class="card-overlay">
+                <div class="title">Green Curry</div>
+                <div style="font-size: 0.9rem; opacity: 0.8;">4.7 ★ • 15 min</div>
+                <div class="price">$13.45</div>
+            </div>
         </div>
     </div>
 
-    <div id="menu" class="page">
-        <div id="menu-content"></div>
-    </div>
-
-    <div id="liked" class="page"><h2>Your Favorites</h2></div>
-
-    <div id="cart" class="page">
-        <h2>Your Cart</h2>
-        <p>Total: $0.00</p>
-        <a href="https://your-helcim-payment-link.com" style="text-decoration: none;">
-            <button class="helcim-btn">Pay with Helcim</button>
-        </a>
-    </div>
-
+    <!-- Nav -->
     <nav>
-        <button class="nav-btn" onclick="showPage('home')">🏠 Home</button>
+        <button class="nav-btn active" onclick="showPage('home')">🏠 Home</button>
         <button class="nav-btn" onclick="showPage('menu')">🍽️ Menu</button>
-        <button class="nav-btn" onclick="showPage('liked')">❤️ Liked</button>
+        <button class="nav-btn" onclick="showPage('saved')">❤️ Saved</button>
         <button class="nav-btn" onclick="showPage('cart')">🛒 Cart</button>
     </nav>
 
@@ -57,24 +69,7 @@ cat <<'EOF' > index.html
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
         }
-
-        const menuData = {
-            "Curry in a Hurry": [{"name": "Chicken Green Curry", "price": 13.45}, {"name": "Green Curry", "price": 13.45}, {"name": "Massaman Curry", "price": 13.45}, {"name": "Mussaman", "price": 14.0}, {"name": "Pad Thai vegan", "price": 11.95}],
-            "Feel-Good Fix": [{"name": "Garlic & Black Pepper", "price": 13.45}, {"name": "Orange chicken", "price": 11.45}, {"name": "Pad Broccoli", "price": 12.45}, {"name": "Pad Ka Prow (Spicy)", "price": 13.45}],
-            "Joyful Bites": [{"name": "Chicken Wings", "price": 9.0}, {"name": "Crab Rangoon (6pcs)", "price": 7.45}, {"name": "Crispy Spring Rolls", "price": 7.0}, {"name": "Pot Stickers", "price": 8.5}],
-            "Night Market Eats": [{"name": "ChowMein", "price": 11.0}, {"name": "Drunken Noodles", "price": 12.45}, {"name": "Pad Thai", "price": 13.0}, {"name": "Thai Fried Rice", "price": 12.45}],
-            "WOK This Way Tacos": [{"name": "(1) CK Taco", "price": 3.0}, {"name": "(2) CK Tacos", "price": 6.0}, {"name": "(4) CK Tacos", "price": 11.0}, {"name": "(1) Shrimp Taco", "price": 6.0}, {"name": "(4) Shrimp Tacos", "price": 22.0}]
-        };
-
-        const container = document.getElementById('menu-content');
-        for (const [category, items] of Object.entries(menuData)) {
-            container.innerHTML += `<div class="category-title">${category}</div>`;
-            items.forEach(item => {
-                container.innerHTML += `<div class="item"><span>${item.name}</span><span class="price">$${item.price.toFixed(2)}</span></div>`;
-            });
-        }
     </script>
 </body>
 </html>
-EOF
 
