@@ -5,67 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Joy by Thai Thai</title>
     <style>
-        body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #000; color: #fff; padding-bottom: 80px; }
+        :root { --primary: #ff0000; --bg: #000; --text: #fff; }
+        body { margin: 0; font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); padding-bottom: 80px; }
         .page { display: none; padding: 20px; }
         .active { display: block; }
-        
-        header { text-align: center; padding: 20px; border-bottom: 2px solid #ff0000; }
-        h1 { color: #ff0000; margin: 0; }
-        
-        /* Menu Styling */
-        .category-title { color: #ff0000; font-weight: bold; margin-top: 30px; border-bottom: 1px solid #333; padding-bottom: 5px; text-transform: uppercase; }
-        .item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #222; }
-        .price { color: #aaa; }
-        
-        /* Bottom Nav */
-        nav { position: fixed; bottom: 0; width: 100%; background: #111; display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid #333; }
-        .nav-btn { background: none; border: none; color: #fff; font-size: 0.9rem; cursor: pointer; }
+        header { text-align: center; padding: 20px; border-bottom: 2px solid var(--primary); }
+        h1 { color: var(--primary); margin: 0; }
+        .category-title { color: var(--primary); font-weight: bold; margin-top: 25px; border-bottom: 1px solid #333; padding: 10px 0; text-transform: uppercase; }
+        .item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #222; }
+        .price { color: #aaa; font-weight: bold; }
+        nav { position: fixed; bottom: 0; width: 100%; background: #111; display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid #333; z-index: 1000; }
+        .nav-btn { background: none; border: none; color: #fff; font-size: 0.8rem; cursor: pointer; display: flex; flex-direction: column; align-items: center; }
+        .helcim-btn { background: var(--primary); color: white; border: none; padding: 15px; width: 100%; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 1rem; }
     </style>
 </head>
 <body>
 
     <header><h1>Joy by Thai Thai</h1></header>
 
-    <!-- Home Page -->
     <div id="home" class="page active">
-        <h2>Welcome to Joy</h2>
-        <p>Your local favorite, now easier than ever to order.</p>
+        <h2>Trending Now</h2>
+        <div style="height: 300px; background: #222; display: flex; align-items: center; justify-content: center; border-radius: 10px;">
+            TikTok Feed Placeholder
+        </div>
     </div>
 
-    <!-- Menu Page -->
     <div id="menu" class="page">
-        <!-- Categories Generated from Joy_Menu_Final_Clean.csv -->
-        <div class="category-title">Curry in a Hurry</div>
-        <div class="item"><span>Green Curry</span><span class="price">$13.45</span></div>
-        <div class="item"><span>Panang Curry</span><span class="price">$13.45</span></div>
-
-        <div class="category-title">Joyful Bites</div>
-        <div class="item"><span>Crab Rangoon (6pcs)</span><span class="price">$7.45</span></div>
-        <div class="item"><span>Satay</span><span class="price">$9.45</span></div>
-
-        <div class="category-title">WOK This Way Tacos</div>
-        <div class="item"><span>(1) Chicken Taco</span><span class="price">$3.00</span></div>
-        <div class="item"><span>(2) Shrimp Tacos</span><span class="price">$12.00</span></div>
-        
-        <div class="category-title">Night Market Eats</div>
-        <div class="item"><span>Pad Thai</span><span class="price">$13.00</span></div>
-        <div class="item"><span>Thai Fried Rice</span><span class="price">$12.45</span></div>
+        <div id="menu-content"></div>
     </div>
 
-    <!-- Liked Page -->
-    <div id="liked" class="page">
-        <h2>Your Favorites</h2>
-        <p>Save items here for quick re-ordering.</p>
-    </div>
+    <div id="liked" class="page"><h2>Your Favorites</h2></div>
 
-    <!-- Cart Page -->
     <div id="cart" class="page">
         <h2>Your Cart</h2>
         <p>Total: $0.00</p>
-        <button style="background: #ff0000; color: #fff; border:none; padding: 15px; width: 100%;">Checkout</button>
+        <a href="https://your-helcim-payment-link.com" style="text-decoration: none;">
+            <button class="helcim-btn">Pay with Helcim</button>
+        </a>
     </div>
 
-    <!-- Bottom Navigation -->
     <nav>
         <button class="nav-btn" onclick="showPage('home')">🏠 Home</button>
         <button class="nav-btn" onclick="showPage('menu')">🍽️ Menu</button>
@@ -77,6 +55,20 @@
         function showPage(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
+        }
+
+        const menuData = {
+            "Curry in a Hurry": [{name: "Chicken Green Curry (Hot)", price: 13.45}, {name: "Green Curry", price: 13.45}, {name: "Massaman Curry", price: 13.45}, {name: "Mussaman", price: 14.0}, {name: "Pad Thai vegan", price: 11.95}],
+            "Joyful Bites": [{name: "Chicken Wings", price: 9.0}, {name: "Crab Rangoon (6pcs)", price: 7.45}, {name: "Crispy Spring Rolls", price: 7.0}, {name: "Pot Stickers", price: 8.5}],
+            "WOK This Way Tacos": [{name: "(1) Chicken Taco", price: 3.0}, {name: "(2) Shrimp Tacos", price: 12.0}, {name: "(4) Shrimp Tacos", price: 22.0}]
+        };
+
+        const container = document.getElementById('menu-content');
+        for (const [category, items] of Object.entries(menuData)) {
+            container.innerHTML += `<div class="category-title">${category}</div>`;
+            items.forEach(item => {
+                container.innerHTML += `<div class="item"><span>${item.name}</span><span class="price">$${item.price.toFixed(2)}</span></div>`;
+            });
         }
     </script>
 </body>
