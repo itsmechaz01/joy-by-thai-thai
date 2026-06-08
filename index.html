@@ -1,3 +1,4 @@
+cat <<'EOF' > index.html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,7 +12,7 @@
         .active { display: block; }
         header { text-align: center; padding: 20px; border-bottom: 2px solid var(--primary); }
         h1 { color: var(--primary); margin: 0; }
-        .category-title { color: var(--primary); font-weight: bold; margin-top: 25px; border-bottom: 1px solid #333; padding: 10px 0; text-transform: uppercase; }
+        .category-title { color: var(--primary); font-weight: bold; margin-top: 25px; border-bottom: 1px solid #333; padding: 10px 0; text-transform: uppercase; font-size: 0.9rem; }
         .item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #222; }
         .price { color: #aaa; font-weight: bold; }
         nav { position: fixed; bottom: 0; width: 100%; background: #111; display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid #333; z-index: 1000; }
@@ -58,9 +59,11 @@
         }
 
         const menuData = {
-            "Curry in a Hurry": [{name: "Chicken Green Curry (Hot)", price: 13.45}, {name: "Green Curry", price: 13.45}, {name: "Massaman Curry", price: 13.45}, {name: "Mussaman", price: 14.0}, {name: "Pad Thai vegan", price: 11.95}],
-            "Joyful Bites": [{name: "Chicken Wings", price: 9.0}, {name: "Crab Rangoon (6pcs)", price: 7.45}, {name: "Crispy Spring Rolls", price: 7.0}, {name: "Pot Stickers", price: 8.5}],
-            "WOK This Way Tacos": [{name: "(1) Chicken Taco", price: 3.0}, {name: "(2) Shrimp Tacos", price: 12.0}, {name: "(4) Shrimp Tacos", price: 22.0}]
+            "Curry in a Hurry": [{"name": "Chicken Green Curry", "price": 13.45}, {"name": "Green Curry", "price": 13.45}, {"name": "Massaman Curry", "price": 13.45}, {"name": "Mussaman", "price": 14.0}, {"name": "Pad Thai vegan", "price": 11.95}],
+            "Feel-Good Fix": [{"name": "Garlic & Black Pepper", "price": 13.45}, {"name": "Orange chicken", "price": 11.45}, {"name": "Pad Broccoli", "price": 12.45}, {"name": "Pad Ka Prow (Spicy)", "price": 13.45}],
+            "Joyful Bites": [{"name": "Chicken Wings", "price": 9.0}, {"name": "Crab Rangoon (6pcs)", "price": 7.45}, {"name": "Crispy Spring Rolls", "price": 7.0}, {"name": "Pot Stickers", "price": 8.5}],
+            "Night Market Eats": [{"name": "ChowMein", "price": 11.0}, {"name": "Drunken Noodles", "price": 12.45}, {"name": "Pad Thai", "price": 13.0}, {"name": "Thai Fried Rice", "price": 12.45}],
+            "WOK This Way Tacos": [{"name": "(1) CK Taco", "price": 3.0}, {"name": "(2) CK Tacos", "price": 6.0}, {"name": "(4) CK Tacos", "price": 11.0}, {"name": "(1) Shrimp Taco", "price": 6.0}, {"name": "(4) Shrimp Tacos", "price": 22.0}]
         };
 
         const container = document.getElementById('menu-content');
@@ -73,3 +76,5 @@
     </script>
 </body>
 </html>
+EOF
+
