@@ -1,75 +1,291 @@
-cat <<'EOF' > index.html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Joy by Thai Thai</title>
     <style>
-        :root { --primary: #ff0000; --bg: #000; --text: #fff; }
-        body { margin: 0; font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); padding-bottom: 80px; }
-        
-        /* Header & Search */
-        header { padding: 20px; }
-        h1 { font-size: 1.5rem; margin-bottom: 15px; }
-        .search-bar { width: 100%; padding: 12px; border-radius: 10px; border: none; background: #222; color: #fff; box-sizing: border-box; }
+        :root { --primary: #FF2D55; --accent: #FF9500; --bg-dark: #0A0A0A; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100%; background: var(--bg-dark); color: white; font-family: -apple-system, BlinkMacSystemFont, sans-serif; overflow: hidden; }
 
-        /* Feed Cards */
-        .page { display: none; }
-        .active { display: block; }
-        .card { position: relative; height: 300px; border-radius: 20px; margin: 20px; overflow: hidden; background: #333; display: flex; align-items: flex-end; padding: 20px; box-sizing: border-box; background-size: cover; background-position: center; }
-        .card-overlay { z-index: 1; }
-        .badge { background: #ffcc00; color: #000; padding: 4px 8px; border-radius: 5px; font-weight: bold; font-size: 0.8rem; position: absolute; top: 15px; left: 15px; }
-        .title { font-size: 1.5rem; font-weight: bold; margin: 5px 0; }
-        .price { color: var(--primary); font-size: 1.5rem; font-weight: bold; }
+        .topbar { 
+            position: fixed; top: 0; width: 100%; height: 70px; 
+            background: rgba(10,10,10,0.95); backdrop-filter: blur(20px); 
+            display: flex; align-items: center; padding: 0 16px; gap: 12px;
+            z-index: 2000; border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+        .search { flex: 1; background: #222; border: none; border-radius: 9999px; padding: 10px 16px; color: white; font-size: 16px; }
 
-        /* Nav */
-        nav { position: fixed; bottom: 0; width: 100%; background: #000; display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid #333; z-index: 1000; }
-        .nav-btn { background: none; border: none; color: #aaa; font-size: 0.7rem; cursor: pointer; display: flex; flex-direction: column; align-items: center; }
-        .nav-btn.active { color: var(--primary); }
+        .app-view { display: none; height: 100vh; padding-top: 70px; width: 100%; }
+        .app-view.active-view { display: block !important; }
+
+        .tiktok-feed {
+            height: 100%;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .stack-card {
+            height: 48vh;
+            margin: 12px 16px;
+            scroll-snap-align: start;
+            position: relative;
+            background-size: cover;
+            background-position: center;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+        }
+
+        .overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 45%, rgba(0,0,0,0.85)); }
+
+        .content { position: absolute; bottom: 0; left: 0; right: 0; padding: 16px; z-index: 10; }
+        .title { font-size: 20px; font-weight: 700; line-height: 1.2; }
+        .price { font-size: 19px; color: var(--primary); font-weight: 700; }
+        .meta { font-size: 13px; opacity: 0.9; margin: 4px 0; }
+        .heart { position: absolute; top: 12px; right: 12px; font-size: 26px; cursor: pointer; z-index: 20; }
+        .popular { position: absolute; top: 12px; left: 12px; background: var(--accent); color: black; padding: 3px 10px; border-radius: 9999px; font-size: 12px; font-weight: 700; z-index: 20; }
+
+        .bottom-nav { 
+            position: fixed; bottom: 0; width: 100%; height: 74px; 
+            background: #000; display: flex; justify-content: space-around; 
+            align-items: center; z-index: 2100; border-top: 1px solid #333; 
+        }
+        .nav-item { color: #888; font-size: 11px; font-weight: 600; cursor: pointer; text-align: center; }
+        .nav-item.active { color: var(--primary); }
+
+        .modal { 
+            position: fixed; bottom: -100%; left: 0; right: 0; 
+            background: #16161A; padding: 24px; 
+            transition: bottom 0.4s cubic-bezier(0.32, 0.72, 0, 1); 
+            z-index: 3000; border-top-left-radius: 24px; 
+            border-top-right-radius: 24px; max-height: 85vh; overflow-y: auto;
+        }
+        .modal.active { bottom: 0; }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>Joy by Thai Thai</h1>
-        <input type="text" class="search-bar" placeholder="Search Thai dishes...">
-    </header>
+<div class="topbar">
+    <h1 style="font-size: 22px; font-weight: 800;">Joy</h1>
+    <input type="text" class="search" id="searchInput" placeholder="Search Thai dishes...">
+</div>
 
-    <!-- Home (Visual Feed) -->
-    <div id="home" class="page active">
-        <div class="card" style="background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.7)), url('https://via.placeholder.com/600x400');">
-            <span class="badge">Popular 🔥</span>
-            <div class="card-overlay">
-                <div class="title">Thai Fried Rice</div>
-                <div style="font-size: 0.9rem; opacity: 0.8;">4.8 ★ • 12 min</div>
-                <div class="price">$12.45</div>
-            </div>
-        </div>
-        <div class="card" style="background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.7)), url('https://via.placeholder.com/600x400');">
-            <span class="badge">Popular 🔥</span>
-            <div class="card-overlay">
-                <div class="title">Green Curry</div>
-                <div style="font-size: 0.9rem; opacity: 0.8;">4.7 ★ • 15 min</div>
-                <div class="price">$13.45</div>
-            </div>
-        </div>
+<!-- HOME -->
+<div id="view-home" class="app-view active-view">
+    <div class="tiktok-feed" id="homeFeed"></div>
+</div>
+
+<!-- MENU -->
+<div id="view-menu" class="app-view">
+    <div class="tiktok-feed" id="menuFeed"></div>
+</div>
+
+<!-- SAVED -->
+<div id="view-saved" class="app-view">
+    <div class="tiktok-feed" id="savedFeed"></div>
+</div>
+
+<!-- Bottom Nav -->
+<div class="bottom-nav">
+    <div class="nav-item active" onclick="switchTab(0)">🏠 Home</div>
+    <div class="nav-item" onclick="switchTab(1)">📋 Menu</div>
+    <div class="nav-item" onclick="switchTab(2)">❤️ Saved</div>
+    <div class="nav-item" onclick="showCart()">🛒 Cart</div>
+</div>
+
+<!-- Modal -->
+<div class="modal" id="modal">
+    <div style="text-align:center; margin-bottom:16px;">
+        <div style="height:5px; width:40px; background:#555; border-radius:9999px; margin:0 auto;"></div>
+    </div>
+    <h2 id="modalTitle" style="font-size:28px; margin-bottom:8px;"></h2>
+    <p id="modalPrice" style="font-size:24px; color:var(--primary); font-weight:700;"></p>
+
+    <label style="display:block; margin:12px 0 8px; color:#aaa;">Quantity</label>
+    <div style="display:flex; align-items:center; gap:16px; margin-bottom:20px;">
+        <button onclick="changeQuantity(-1)" style="width:50px; height:50px; font-size:24px; background:#333; border:none; border-radius:12px;">–</button>
+        <span id="quantity" style="font-size:24px; font-weight:700; width:40px; text-align:center;">1</span>
+        <button onclick="changeQuantity(1)" style="width:50px; height:50px; font-size:24px; background:#333; border:none; border-radius:12px;">+</button>
     </div>
 
-    <!-- Nav -->
-    <nav>
-        <button class="nav-btn active" onclick="showPage('home')">🏠 Home</button>
-        <button class="nav-btn" onclick="showPage('menu')">🍽️ Menu</button>
-        <button class="nav-btn" onclick="showPage('saved')">❤️ Saved</button>
-        <button class="nav-btn" onclick="showPage('cart')">🛒 Cart</button>
-    </nav>
+    <label style="display:block; margin:12px 0 8px; color:#aaa;">PROTEIN</label>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:20px;">
+        <button class="protein-btn selected" onclick="setProtein(this, 'Chicken')">Chicken</button>
+        <button class="protein-btn" onclick="setProtein(this, 'Tofu')">Tofu</button>
+        <button class="protein-btn" onclick="setProtein(this, 'Pork')">Pork</button>
+        <button class="protein-btn" onclick="setProtein(this, 'Beef')">Beef (+$4)</button>
+        <button class="protein-btn" onclick="setProtein(this, 'Shrimp')">Shrimp (+$5)</button>
+    </div>
 
-    <script>
-        function showPage(pageId) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
-        }
-    </script>
+    <label style="display:block; margin:12px 0 8px; color:#aaa;">SPICE LEVEL</label>
+    <div style="display:flex; gap:8px; margin-bottom:20px;">
+        <button class="spice-btn" onclick="setSpice(this, 0)">Mild</button>
+        <button class="spice-btn selected" onclick="setSpice(this, 1)">Medium</button>
+        <button class="spice-btn" onclick="setSpice(this, 2)">Spicy 🔥</button>
+    </div>
+
+    <button onclick="addToCartFromModal()" id="addBtn" style="background:var(--primary); color:white; border:none; padding:18px; border-radius:12px; width:100%; font-weight:700;">Add to Cart</button>
+    <button onclick="closeModal()" style="margin-top:12px; width:100%; padding:16px; background:transparent; border:1px solid #555; color:white; border-radius:12px;">Cancel</button>
+</div>
+
+<script>
+// ==================== PRODUCTS ====================
+const products = [
+    { name: "Thai Fried Rice", price: 12.45, category: "Night Market Eats", rating: 4.8 },
+    { name: "Pad Thai", price: 12.45, category: "Night Market Eats", rating: 4.9 },
+    { name: "Yellow Curry", price: 13.45, category: "Curry in a Hurry", rating: 4.7 },
+    { name: "Pad Ka Prow Chicken", price: 12.00, category: "Feel-Good Fix", rating: 4.8 },
+    { name: "Drunken Noodles", price: 12.45, category: "Night Market Eats", rating: 4.6 },
+    { name: "Green Curry", price: 13.45, category: "Curry in a Hurry", rating: 4.8 },
+    { name: "Chicken Spring Rolls", price: 7.45, category: "Joyful Bites", rating: 4.5 }
+];
+
+let currentProduct = null;
+let currentQuantity = 1;
+let currentProtein = "Chicken";
+let currentSpice = 1;
+let cart = [];
+let savedItems = new Set();
+
+// Load saved items from localStorage
+function loadSavedItems() {
+    const saved = localStorage.getItem('savedItems');
+    if (saved) {
+        JSON.parse(saved).forEach(idx => savedItems.add(idx));
+    }
+}
+
+// Save to localStorage
+function saveToStorage() {
+    localStorage.setItem('savedItems', JSON.stringify(Array.from(savedItems)));
+}
+
+// Create Stack Card
+function createStackCard(p, showHeart = true) {
+    const idx = products.findIndex(item => item.name === p.name);
+    const card = document.createElement("div");
+    card.className = "stack-card";
+    card.style.backgroundImage = `url('https://picsum.photos/id/${200 + idx}/800/1200')`;
+
+    const isPopular = ["Thai Fried Rice", "Pad Thai", "Yellow Curry"].includes(p.name);
+
+    card.innerHTML = `
+        <div class="overlay"></div>
+        ${isPopular ? `<div class="popular">Popular 🔥</div>` : ''}
+        ${showHeart ? `<div class="heart" onclick="event.stopImmediatePropagation(); toggleSave(${idx}, this)">${savedItems.has(idx) ? '❤️' : '♡'}</div>` : ''}
+        <div class="content">
+            <div class="title">${p.name}</div>
+            <div class="meta">${p.rating} ★ • 12 min</div>
+            <div class="price">$${p.price.toFixed(2)}</div>
+        </div>
+    `;
+    card.onclick = () => openModal(idx);
+    return card;
+}
+
+function renderHome() {
+    const container = document.getElementById("homeFeed");
+    container.innerHTML = '';
+    products.forEach(p => container.appendChild(createStackCard(p)));
+}
+
+function renderMenu() {
+    const container = document.getElementById("menuFeed");
+    container.innerHTML = '';
+    products.forEach(p => container.appendChild(createStackCard(p)));
+}
+
+function renderSaved() {
+    const container = document.getElementById("savedFeed");
+    container.innerHTML = '';
+
+    if (savedItems.size === 0) {
+        container.innerHTML = `<div style="padding:60px 20px; text-align:center; color:#666;">No saved items yet.<br>❤️ Tap hearts to save dishes</div>`;
+        return;
+    }
+
+    Array.from(savedItems).forEach(idx => {
+        const p = products[idx];
+        if (p) container.appendChild(createStackCard(p, false));
+    });
+}
+
+function toggleSave(idx, el) {
+    if (savedItems.has(idx)) {
+        savedItems.delete(idx);
+        el.textContent = '♡';
+    } else {
+        savedItems.add(idx);
+        el.textContent = '❤️';
+    }
+    saveToStorage();
+}
+
+// Modal Functions
+function openModal(idx) {
+    currentProduct = products[idx];
+    currentQuantity = 1;
+    currentProtein = "Chicken";
+    currentSpice = 1;
+
+    document.getElementById('modalTitle').textContent = currentProduct.name;
+    document.getElementById('modalPrice').textContent = `$${currentProduct.price.toFixed(2)}`;
+    document.getElementById('quantity').textContent = currentQuantity;
+    document.getElementById('modal').classList.add('active');
+}
+
+function changeQuantity(delta) {
+    currentQuantity = Math.max(1, currentQuantity + delta);
+    document.getElementById('quantity').textContent = currentQuantity;
+}
+
+function setProtein(btn, protein) {
+    currentProtein = protein;
+    document.querySelectorAll('.protein-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+}
+
+function setSpice(btn, level) {
+    currentSpice = level;
+    document.querySelectorAll('.spice-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+}
+
+function addToCartFromModal() {
+    if (!currentProduct) return;
+    const btn = document.getElementById('addBtn');
+    btn.textContent = "Added ✓";
+    btn.style.background = "#22c55e";
+
+    setTimeout(() => {
+        btn.textContent = "Add to Cart";
+        btn.style.background = "var(--primary)";
+        closeModal();
+    }, 1200);
+}
+
+function closeModal() {
+    document.getElementById('modal').classList.remove('active');
+}
+
+function showCart() {
+    alert(`Your cart has ${cart.length} items!`);
+}
+
+function switchTab(tab) {
+    document.querySelectorAll('.app-view').forEach((v, i) => v.classList.toggle('active-view', i === tab));
+    document.querySelectorAll('.nav-item').forEach((v, i) => v.classList.toggle('active', i === tab));
+
+    if (tab === 2) renderSaved();
+}
+
+// Initialize
+loadSavedItems();
+renderHome();
+console.log("✅ Persistent Saved Items + All Features Ready");
+</script>
 </body>
 </html>
-
